@@ -6,7 +6,7 @@ def populate_form(camper):
     """ takes in an instance of the camper class which contains the relevant
      information to register a camper for the trail """
     url = 'https://canypermits.nps.gov/index.cfm'
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome('./chromedriver')
     driver.get(url)
 
     # first page
@@ -35,29 +35,30 @@ def populate_form(camper):
     # third page
     table = driver.find_element_by_class_name("sitetable")
     rows = table.find_elements_by_tag_name("tr")
-    r = camper.campsite
+    r = 2
     while r < 23:
-        try:
-            cells = rows[r].find_elements_by_tag_name('td')
-            try:
-                radio_button = cells[2].find_element_by_tag_name('input')
+        cells = rows[r].find_elements_by_tag_name('td')
+        if cells[0].text == camper.campsite1:
+            radio_button = cells[1].find_element_by_tag_name('input')
+            if radio_button:
                 radio_button.click()
                 break
-            except:
-                radio_button = cells[1].find_element_by_tag_name('input')
+        elif cells[0].text == camper.campsite2:
+            radio_button = cells[1].find_element_by_tag_name('input')
+            if radio_button:
                 radio_button.click()
                 break
-        except Exception as e:
-            r += 1
+        r += 1
+
     submit_button = driver.find_elements_by_xpath(
         "//input[@value='Add Selected Sites']")[0]
     submit_button.click()
 
     # fourth page
     elem = driver.find_element_by_name("GroupCapacity_1")
-    elem.send_keys(15)
+    elem.send_keys(2)
     elem = driver.find_element_by_name("GroupCapacity_2")
-    elem.send_keys(3)
+    elem.send_keys(1)
     submit_button = driver.find_elements_by_xpath("//input[@value='Next']")[0]
     submit_button.click()
 
@@ -70,10 +71,10 @@ def populate_form(camper):
         box.click()
 
     elem = driver.find_element_by_name("Value_3")
-    elem.send_keys("Gooseberry Hiking Trail")
+    elem.send_keys("Shafer Trail Road")
 
     elem = driver.find_element_by_name("Value_4")
-    elem.send_keys("Gooseberry Hiking Trail")
+    elem.send_keys("Top of Mineral Road Switchbacks")
 
     driver.find_element_by_class_name("button").click()
 
@@ -106,34 +107,3 @@ def populate_form(camper):
     driver.find_element_by_class_name("button").click()
 
     time.sleep(100)
-
-# tests
-# class Camper:
-#     def __init__(self, month, day, year, campsite, first_name, last_name,
-#                 email_address, address1, address2, city, state, zip, phone):
-#         self.month = month
-#         self.day = day
-#         self.year = year
-#         self.campsite = campsite
-#         self.first_name = first_name
-#         self.last_name = last_name
-#         self.email_address = email_address
-#         self.address1 = address1
-#         self.address2 = address2
-#         self.city = city
-#         self.state = state
-#         self.zip = zip
-#         self.phone = phone
-#
-#
-# import csv
-# my_list = []
-#
-# with open('campers.csv', 'r') as csvfile:
-#     reader = csv.reader(csvfile)
-#     for i, r in enumerate(reader):
-#         if i != 0:
-#             my_list.append(Camper(r[0], r[1], r[2], int(r[3]), r[4], r[5], r[6],
-#                                   r[7], r[8], r[9], r[10], r[11], r[12]))
-#
-# populate_form(my_list[0])

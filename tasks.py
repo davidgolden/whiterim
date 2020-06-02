@@ -8,12 +8,13 @@ import populate
 
 
 class Camper:
-    def __init__(self, month, day, year, campsite, first_name, last_name,
+    def __init__(self, month, day, year, campsite1, campsite2, first_name, last_name,
                 email_address, address1, address2, city, state, zip, phone):
         self.month = month
         self.day = day
         self.year = year
-        self.campsite = campsite
+        self.campsite1 = campsite1
+        self.campsite2 = campsite2
         self.first_name = first_name
         self.last_name = last_name
         self.email_address = email_address
@@ -30,8 +31,9 @@ with open('campers.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     for i, r in enumerate(reader):
         if i != 0:
-            campers.append(Camper(r[0], r[1], r[2], int(r[3]), r[4], r[5],
-                                  r[6], r[7], r[8], r[9], r[10], r[11], r[12]))
+            campers.append(Camper(r[0], r[1], r[2], r[3], r[4], r[5],
+                                  r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13]))
+    print(campers)
 
 
 def populate_go():
@@ -41,7 +43,7 @@ def populate_go():
 
 
 if __name__ == '__main__':
-    schedule.every().day.at("00:59:30").do(populate_go)
+    schedule.every().day.at("21:33:00").do(populate_go)
     while True:
         schedule.run_pending()
         time.sleep(1)
