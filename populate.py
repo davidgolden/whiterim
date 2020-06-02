@@ -1,8 +1,10 @@
 from selenium import webdriver
+from settings import *
+from selenium.common.exceptions import NoSuchElementException
 import time
 
 
-def populate_form(camper):
+def populate_form():
     """ takes in an instance of the camper class which contains the relevant
      information to register a camper for the trail """
     url = 'https://canypermits.nps.gov/index.cfm'
@@ -13,13 +15,13 @@ def populate_form(camper):
     while driver.current_url == 'https://canypermits.nps.gov/index.cfm':
         driver.refresh()
         elem = driver.find_element_by_name("StartMonth")
-        elem.send_keys(camper.month)
+        elem.send_keys(SETTINGS_MONTH)
 
         elem = driver.find_element_by_name("StartDay")
-        elem.send_keys(camper.day)
+        elem.send_keys(SETTINGS_DAY)
 
         elem = driver.find_element_by_name("StartYear")
-        elem.send_keys(camper.year)
+        elem.send_keys(SETTINGS_YEAR)
 
         submit_button = driver.find_elements_by_xpath("//input[@value='Next']")[0]
         submit_button.click()
@@ -37,18 +39,20 @@ def populate_form(camper):
     rows = table.find_elements_by_tag_name("tr")
     r = 2
     while r < 23:
-        cells = rows[r].find_elements_by_tag_name('td')
-        if cells[0].text == camper.campsite1:
-            radio_button = cells[1].find_element_by_tag_name('input')
-            if radio_button:
-                radio_button.click()
+        try:
+            found_site = False
+            cells = rows[r].find_elements_by_tag_name('td')
+            for site in SETTINGS_CAMPSITES:
+                if cells[0].text == site:
+                    radio_button = cells[1].find_element_by_tag_name('input')
+                    radio_button.click()
+                    found_site = True
+                    break
+            if found_site:
                 break
-        elif cells[0].text == camper.campsite2:
-            radio_button = cells[1].find_element_by_tag_name('input')
-            if radio_button:
-                radio_button.click()
-                break
-        r += 1
+            r += 1
+        except NoSuchElementException:
+            continue
 
     submit_button = driver.find_elements_by_xpath(
         "//input[@value='Add Selected Sites']")[0]
@@ -80,30 +84,30 @@ def populate_form(camper):
 
     # seventh page
     elem = driver.find_element_by_name("FirstName")
-    elem.send_keys(camper.first_name)
+    elem.send_keys(SETTINGS_FIRST_NAME)
     elem = driver.find_element_by_name("LastName")
-    elem.send_keys(camper.last_name)
+    elem.send_keys(SETTINGS_LAST_NAME)
     elem = driver.find_element_by_name("EmailAddress")
-    elem.send_keys(camper.email_address)
+    elem.send_keys(SETTINGS_EMAIL)
     elem = driver.find_element_by_name("Address1")
-    elem.send_keys(camper.address1)
+    elem.send_keys(SETTINGS_ADDRESS_1)
     elem = driver.find_element_by_name("Address2")
-    elem.send_keys(camper.address2)
+    elem.send_keys(SETTINGS_ADDRESS_2)
     elem = driver.find_element_by_name("city")
-    elem.send_keys(camper.city)
+    elem.send_keys(SETTINGS_CITY)
     elem = driver.find_element_by_name("state")
-    elem.send_keys(camper.state)
+    elem.send_keys(SETTINGS_STATE)
     elem = driver.find_element_by_name("phone")
-    elem.send_keys(camper.phone)
+    elem.send_keys(SETTINGS_PHONE)
     elem = driver.find_element_by_name("zip")
-    elem.send_keys(camper.zip)
+    elem.send_keys(SETTINGS_ZIP)
 
-    driver.find_element_by_class_name("button").click()
-
-    # eighth page
-    driver.find_elements_by_class_name("button")[1].click()
+    # driver.find_element_by_class_name("button").click()
+    #
+    # # eighth page
+    # driver.find_elements_by_class_name("button")[1].click()
 
     # ninth page
-    driver.find_element_by_class_name("button").click()
+    # driver.find_element_by_class_name("button").click()
 
     time.sleep(100)
