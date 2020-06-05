@@ -37,12 +37,12 @@ def populate_form():
     # third page
     table = driver.find_element_by_class_name("sitetable")
     rows = table.find_elements_by_tag_name("tr")
-    r = 2
-    while r < 23:
+
+    found_site = False
+    for site in SETTINGS_CAMPSITES:
         try:
-            found_site = False
-            cells = rows[r].find_elements_by_tag_name('td')
-            for site in SETTINGS_CAMPSITES:
+            for r in range(2, 22):
+                cells = rows[r].find_elements_by_tag_name('td')
                 if cells[0].text == site:
                     radio_button = cells[1].find_element_by_tag_name('input')
                     radio_button.click()
@@ -50,7 +50,6 @@ def populate_form():
                     break
             if found_site:
                 break
-            r += 1
         except NoSuchElementException:
             continue
 
@@ -101,13 +100,17 @@ def populate_form():
     elem.send_keys(SETTINGS_PHONE)
     elem = driver.find_element_by_name("zip")
     elem.send_keys(SETTINGS_ZIP)
+    elem = driver.find_element_by_name("Comments")
+    elem.send_keys(SETTINGS_COMMENT)
 
-    # driver.find_element_by_class_name("button").click()
-    #
+
+
+    driver.find_element_by_class_name("button").click()
+
     # # eighth page
-    # driver.find_elements_by_class_name("button")[1].click()
+    driver.find_elements_by_class_name("button")[1].click()
 
     # ninth page
-    # driver.find_element_by_class_name("button").click()
+    driver.find_element_by_class_name("button").click()
 
     time.sleep(100)
